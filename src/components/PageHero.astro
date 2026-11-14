@@ -1,0 +1,35 @@
+---
+import Pic from './Pic.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import type { ImageMetadata } from 'astro';
+interface Props {
+  chapter: string;
+  kicker?: string;
+  title: string;
+  intro?: string;
+  image: ImageMetadata;
+  position?: string;
+  crumbs: { label: string; href?: string }[];
+  compact?: boolean;
+}
+const { chapter, kicker, title, intro, image, position = 'center', crumbs, compact = false } = Astro.props;
+---
+<section class:list={['phero', { 'phero--compact': compact }]} data-hero>
+  <div class="phero__media" data-hero-media aria-hidden="true">
+    <div class="phero__zoom" data-zoom-in>
+      <Pic src={image} alt="" sizes="100vw" priority position={position} />
+    </div>
+  </div>
+  <div class="phero__content" data-hero-content>
+    <div class="phero__top" data-fade data-delay="0.5">
+      <Breadcrumbs items={crumbs} />
+      <p class="eyebrow">{chapter}</p>
+    </div>
+    <h1 class="phero__title">
+      {kicker && <span class="phero__kicker" data-split data-delay="0.25">{kicker}</span>}
+      <span class="phero__main" data-split data-delay="0.35">{title}</span>
+    </h1>
+    {intro && <p class="phero__intro" data-fade data-delay="0.7">{intro}</p>}
+  </div>
+  <a href="#content" class="scroll-cue" data-fade data-delay="0.9" aria-label="Scroll to content"><span>Scroll</span><i></i></a>
+</section>

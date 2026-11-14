@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ImageReveal from '../components/ImageReveal.astro';
+import BookingCTA from '../components/BookingCTA.astro';
+import { images } from '../data/images';
+import { steps } from '../data/steps';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'How It Works' }];
+const stepImages = [
+  { src: images.collectionCover, alt: 'A therapist at work in a softly lit room', ratio: '4 / 3' },
+  { src: images.signature, alt: 'A therapist’s hands gliding across a guest’s back', ratio: '4 / 5' },
+  { src: images.introHands, alt: 'Hands warming massage oil', ratio: '1 / 1' },
+  { src: images.space, alt: 'A calm London bedroom prepared for the evening', ratio: '4 / 3' },
+];
+const links = [
+  { href: '/massage-collection/', label: 'View the Collection' },
+  { href: '/massage-collection/#pricing-terms', label: 'Pricing & Terms' },
+  { href: '/contact/', label: 'Send a Request' },
+  { href: '/our-experience/', label: 'Our Experience' },
+];
+const faqs = [
+  { q: 'Is my booking confirmed when I send the form?', a: 'Not yet. Sending the form submits a request. We then reply personally to confirm availability, timing and every detail of your appointment. Your booking is only confirmed once you have heard from us.' },
+  { q: 'Where do appointments take place?', a: 'WINKS London is an outcall service. Appointments take place at your private residence or hotel in Central London. Please include your postcode so we can confirm we are able to visit your address.' },
+  { q: 'How do I choose the right massage?', a: 'Each experience in the collection is listed with its durations and prices. If you are unsure, tell us what you have in mind and we will be happy to recommend one.' },
+  { q: 'How long is an appointment, and what does it cost?', a: 'Durations and prices for every experience are listed in the Massage Collection. Prices exclude transport: Central London bookings may incur a £50 taxi fare, and bookings outside business hours (1PM – 2AM) may incur a 40% surcharge. We confirm the final price with you before your appointment is arranged.' },
+];
+---
+<BaseLayout
+  title="How It Works | Arranging Your WINKS London Outcall Massage"
+  description="Four simple steps to arranging an outcall massage with WINKS London in Central London: explore, choose, arrange your appointment and relax in your own space."
+  breadcrumbs={crumbs}
+  schema={[{ '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }]}
+>
+  <PageHero chapter="Chapter 05" kicker="Four chapters" title="How it works" intro="From first glance to final exhale — the complete journey, in four unhurried steps." image={images.personalised} crumbs={crumbs} />
+
+  <div id="content">
+    <section class="statement" aria-labelledby="how-intro">
+      <p class="eyebrow" data-fade>The journey</p>
+      <div>
+        <h2 class="statement__text" id="how-intro" data-split>Arranging your massage should feel as <em>effortless</em> as the massage itself.</h2>
+      </div>
+    </section>
+
+    {steps.map((s, i) => (
+      <section class="chapter" aria-labelledby={`step-${s.number}`}>
+        <span class="chapter__num" aria-hidden="true" data-speed="0.4">{s.number}</span>
+        <div class="chapter__text">
+          <p class="eyebrow" data-fade>Step {s.number}</p>
+          <h2 class="h2 split__title" id={`step-${s.number}`} data-split>{s.title}</h2>
+          <div class="prose" data-stagger>
+            <p>{s.long}</p>
+            <p><a href={links[i].href} class="link-arrow">{links[i].label}</a></p>
+          </div>
+        </div>
+        <div class="chapter__media">
+          <ImageReveal src={stepImages[i].src} alt={stepImages[i].alt} ratio={stepImages[i].ratio} sizes="(min-width: 900px) 40vw, 84vw" dir={i % 2 ? 'right' : 'left'} />
+        </div>
+      </section>
+    ))}
+
+    <section class="qa band" aria-labelledby="qa-title">
+      <div>
+        <p class="eyebrow" data-fade>Good to know</p>
+        <h2 class="h2" id="qa-title" data-split style="margin-top:1.5rem">A few <em>questions</em></h2>
+      </div>
+      <div data-stagger>
+        {faqs.map((f) => (
+          <details>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <BookingCTA title="Ready when you are." text="Send us your preferred date, time and location, and we will be in touch to confirm." />
+</BaseLayout>

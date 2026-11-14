@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Split from '../components/Split.astro';
+import ImageReveal from '../components/ImageReveal.astro';
+import BookingCTA from '../components/BookingCTA.astro';
+import { images } from '../data/images';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'About WINKS' }];
+---
+<BaseLayout
+  title="About WINKS London | A Considered Approach to Outcall Massage"
+  description="Discover the philosophy behind WINKS London — a premium outcall massage provider in Central London built on comfort, professionalism and discretion."
+  breadcrumbs={crumbs}
+>
+  <PageHero chapter="Chapter 02" kicker="About" title="WINKS London" intro="A premium outcall massage provider serving Central London — built on comfort, care and quiet professionalism." image={images.introDetail} crumbs={crumbs} />
+
+  <div id="content">
+    <section class="statement" aria-labelledby="about-intro">
+      <p class="eyebrow" data-fade>Introduction</p>
+      <div>
+        <h2 class="statement__text" id="about-intro" data-split>We believe the finest massage is the one that asks <em>nothing</em> of you — no journey, no schedule but your own, no reason to hurry.</h2>
+        <div class="statement__foot" data-stagger>
+          <p>WINKS London was created around a simple idea: that true relaxation begins in the place you are most comfortable. So rather than asking you to come to us, we bring a professional massage experience to you.</p>
+          <p>Every appointment is arranged personally and delivered with the same standard of attention — considered, courteous and entirely private.</p>
+        </div>
+      </div>
+    </section>
+
+    <Split image={images.introHands} alt="A therapist warming massage oil between the palms" number="01" eyebrow="Philosophy" title="Less, but better">
+      <p class="lead">Luxury, to us, is not excess. It is the absence of everything unnecessary.</p>
+      <p>We keep our approach deliberately simple. One appointment at a time, each given our full attention, with nothing to distract from the purpose of the evening: to unwind.</p>
+    </Split>
+
+    <Split image={images.relaxation} alt="A guest resting peacefully during a massage" number="02" eyebrow="Approach" title="Guided by you" reverse>
+      <p class="lead">Your preferences shape the appointment — never the other way round.</p>
+      <p>Before your therapist arrives we take the time to understand how you would like to feel, the pressure you prefer and anything you would like us to keep in mind. During your massage, your comfort leads every decision.</p>
+    </Split>
+
+    <section class="band">
+      <div class="section-head">
+        <p class="eyebrow" data-fade>Professional service</p>
+        <h2 class="h2" data-split>The standard we hold <em>ourselves</em> to</h2>
+      </div>
+      <div class="pillars" data-stagger>
+        <div class="pillar">
+          <span class="pillar__n">01</span>
+          <h3 class="pillar__t">Punctual and prepared</h3>
+          <p>Your therapist arrives at the time agreed, with everything required to prepare your space quietly and efficiently.</p>
+        </div>
+        <div class="pillar">
+          <span class="pillar__n">02</span>
+          <h3 class="pillar__t">Courteous and attentive</h3>
+          <p>Clear, respectful communication from your first message onwards, and a therapist who listens before the massage begins.</p>
+        </div>
+        <div class="pillar">
+          <span class="pillar__n">03</span>
+          <h3 class="pillar__t">Private and discreet</h3>
+          <p>Your enquiry, your address and your appointment are treated in confidence, and used only to arrange your experience.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pad-b" style="padding-top: var(--section)" aria-label="In pictures">
+      <div class="banner">
+        <ImageReveal src={images.collectionCover} alt="A therapist at work in a softly lit room" ratio="16 / 9" sizes="100vw" dir="up" />
+        <p class="banner__caption" data-fade data-delay="0.6">An evening that begins <em>and ends</em> at home.</p>
+      </div>
+    </section>
+  </div>
+
+  <BookingCTA title="Begin with a conversation." text="Tell us how you would like to feel, and we will take care of the rest." />
+</BaseLayout>

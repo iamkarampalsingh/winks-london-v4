@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Pic from '../components/Pic.astro';
+import ImageReveal from '../components/ImageReveal.astro';
+import MassageCollection from '../components/MassageCollection.astro';
+import Split from '../components/Split.astro';
+import Steps from '../components/Steps.astro';
+import BookingCTA from '../components/BookingCTA.astro';
+import { images } from '../data/images';
+import { areas } from '../data/locations';
+
+const benefits = [
+  { t: 'Your preferred location', d: 'Your home, your hotel suite or your residence — the experience comes to you, wherever in Central London you feel most at ease.' },
+  { t: 'A personalised experience', d: 'Pressure, pace and focus are shaped around your preferences and agreed with you before your therapist arrives.' },
+  { t: 'Comfort and convenience', d: 'No travel and no waiting rooms. The calm that follows stays exactly where you are.' },
+  { t: 'Professional service', d: 'Punctual, courteous and attentive from the first message to the final moment of your appointment.' },
+  { t: 'Discreet arrangements', d: 'Every enquiry is handled privately and with care. Your details are used only to arrange your appointment.' },
+];
+---
+<BaseLayout
+  title="WINKS London | Luxury Outcall Massage in Central London"
+  description="WINKS London is a premium outcall massage provider serving Central London. An elevated, personalised massage experience delivered discreetly to your door."
+>
+  <!-- 01 — Cinematic hero -->
+  <section class="hero" data-hero aria-label="Introduction">
+    <div class="hero__media" data-hero-media aria-hidden="true">
+      <div class="hero__zoom" data-zoom-in>
+        <Pic src={images.hero} alt="" sizes="100vw" priority />
+      </div>
+    </div>
+    <div class="hero__content" data-hero-content>
+      <h1 class="hero__title">
+        <span class="hero__pre" data-split data-delay="0.2">The art of</span>
+        <span class="hero__big" data-split data-delay="0.3">Unwinding</span>
+      </h1>
+      <div class="hero__foot">
+        <span class="rule" data-rule></span>
+        <p class="hero__sub" data-fade data-delay="0.75">An elevated outcall massage experience, delivered to your door across Central London.</p>
+        <a href="#introduction" class="link-arrow" data-fade data-delay="0.9">Discover the Experience</a>
+      </div>
+    </div>
+    <a href="#introduction" class="scroll-cue" data-fade data-delay="1.1" aria-label="Scroll to introduction"><span>Scroll</span><i></i></a>
+  </section>
+
+  <!-- 02 — Brand introduction -->
+  <section class="intro" id="introduction" aria-labelledby="intro-title">
+    <div class="intro__head">
+      <p class="eyebrow" data-fade>Chapter 02 — WINKS London</p>
+      <h2 class="h1 intro__title" id="intro-title" data-split>Where comfort meets <em>considered</em> luxury</h2>
+    </div>
+    <div class="intro__grid">
+      <div class="intro__copy">
+        <div class="prose" data-stagger>
+          <p class="lead">WINKS London brings a professional massage experience to the place you feel most at ease — your own.</p>
+          <p>We are an outcall massage provider serving Central London. There is no reception desk and no journey home; simply an unhurried appointment, arranged around your time and delivered to your door with quiet attention to detail.</p>
+          <p>From your first enquiry to the last moment of your massage, everything is handled personally, professionally and with complete discretion.</p>
+        </div>
+        <a href="/about/" class="link-arrow intro__link" data-fade>About WINKS</a>
+        <div class="intro__small" data-speed="0.5">
+          <ImageReveal src={images.introDetail} alt="Folded linen, a brass bowl of oil and a single candle on dark marble" ratio="3 / 4" sizes="(min-width: 900px) 24vw, 60vw" dir="up" />
+        </div>
+      </div>
+      <div class="intro__large">
+        <ImageReveal src={images.introHands} alt="A therapist warming golden massage oil between the palms" ratio="4 / 5" sizes="(min-width: 900px) 50vw, 82vw" dir="up" />
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 — Massage collection (pinned: image expansion → horizontal travel) -->
+  <MassageCollection />
+
+  <!-- 04 — The WINKS experience -->
+  <section class="exp" id="experience" aria-labelledby="exp-title">
+    <div class="exp__head">
+      <p class="eyebrow" data-fade>Chapter 04 — The Experience</p>
+      <h2 class="h1 exp__title" id="exp-title">
+        <span data-split>Your space.</span>
+        <span data-split data-delay="0.1">Your time.</span>
+        <span data-split data-delay="0.2">Your experience.</span>
+      </h2>
+    </div>
+
+    <Split image={images.space} alt="A softly lit London bedroom with a robe laid across the bed" ratio="3 / 2" wide eyebrow="At home, or at your hotel" title="The room you already love" as="h3">
+      <p class="lead">The most restful space in London is very often your own.</p>
+      <p>Your therapist arrives at the agreed time and prepares the room with care, so the experience begins the moment you are ready — and the calm remains long after it ends.</p>
+      <p><a href="/our-experience/" class="link-arrow">Our Experience</a></p>
+    </Split>
+
+    <div class="benefits">
+      <div>
+        <p class="eyebrow" data-fade>Why outcall</p>
+      </div>
+      <ol class="benefits__list" data-stagger>
+        {benefits.map((b, i) => (
+          <li>
+            <span class="benefits__n">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="benefits__t">{b.t}</h3>
+            <p class="benefits__d">{b.d}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 05 — How it works -->
+  <section class="how" id="how-it-works" aria-labelledby="how-title">
+    <div class="how__head">
+      <p class="eyebrow" data-fade>Chapter 05 — How It Works</p>
+      <h2 class="h2" id="how-title" data-split>Four simple chapters, <em>one</em> effortless evening</h2>
+      <div class="how__aside" data-fade>
+        <p class="muted">Arranging your appointment is straightforward, personal and entirely unhurried.</p>
+        <a href="/how-it-works/" class="link-arrow">The full journey</a>
+      </div>
+    </div>
+    <Steps />
+  </section>
+
+  <!-- 06 — Central London -->
+  <section class="london" id="central-london" aria-labelledby="london-title">
+    <p class="london__word" aria-hidden="true" data-speed="1">London</p>
+    <div class="london__grid">
+      <div class="london__media">
+        <ImageReveal src={images.london} alt="London’s skyline at dusk, seen through the windows of a private residence" ratio="3 / 4" position="18% center" sizes="(min-width: 900px) 42vw, 82vw" dir="right" />
+      </div>
+      <div class="london__text">
+        <p class="eyebrow" data-fade>Chapter 06 — Central London</p>
+        <h2 class="h2" id="london-title" data-split>An elevated experience across <em>Central London</em></h2>
+        <div class="prose" data-stagger>
+          <p>WINKS London is an outcall service: we travel to private residences and hotels across Central London, so your appointment begins and ends in your own space.</p>
+          {areas.length > 0 ? (
+            <ul class="london__areas">
+              {areas.map((a) => <li><a href={`/areas-we-cover/${a.slug}/`}>{a.name}</a></li>)}
+            </ul>
+          ) : (
+            <p class="note">Share your postcode when you enquire and we will confirm availability for your address before anything is arranged.</p>
+          )}
+        </div>
+        <a href="/areas-we-cover/" class="link-arrow" data-fade>Areas We Cover</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 — Final conversion -->
+  <BookingCTA />
+</BaseLayout>

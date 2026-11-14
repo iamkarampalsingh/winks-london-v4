@@ -1,0 +1,285 @@
+---
+/**
+ * Booking request form. Posts JSON to /api/booking (a serverless function),
+ * which validates again on the server and forwards via the configured
+ * email service or webhook. A submission is a REQUEST, never a confirmed booking.
+ */
+import { treatments, pricing, fromLabel } from '../data/treatments';
+// Price data for the live estimate (public information, mirrored from the collection).
+const bookingData = {
+  hours: pricing.hours,
+  surcharge: pricing.outOfHoursSurcharge,
+  taxi: pricing.centralLondonTaxi,
+  treatments: Object.fromEntries(treatments.map((t) => [t.slug, { name: t.name, options: t.options, addOn: t.addOn ?? null, note: t.note ?? null }])),
+};
+const today = new Date().toISOString().slice(0, 10);
+---
+<div data-booking>
+  <form class="form" action="/api/booking" method="post" novalidate data-booking-form>
+    <div class="field">
+      <label for="f-name">Full name</label>
+      <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="100" aria-describedby="e-name" />
+      <p class="field__error" id="e-name" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="f-email">Email address</label>
+      <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="160" aria-describedby="e-email" />
+      <p class="field__error" id="e-email" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="f-phone">Phone number</label>
+      <input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="30" aria-describedby="e-phone" />
+      <p class="field__error" id="e-phone" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="f-experience">Preferred massage experience</label>
+      <select id="f-experience" name="experience" required aria-describedby="e-experience">
+        <option value="">Please select</option>
+        {treatments.map((t) => <option value={t.slug}>{t.name} — {fromLabel(t).toLowerCase()}{t.note ? ` (${t.note.toLowerCase()})` : ''}</option>)}
+        <option value="unsure">I would like a recommendation</option>
+      </select>
+      <p class="field__error" id="e-experience" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="f-duration">Duration</label>
+      <select id="f-duration" name="duration" disabled aria-describedby="e-duration">
+        <option value="">Choose an experience first</option>
+      </select>
+      <p class="field__error" id="e-duration" aria-live="polite"></p>
+    </div>
+    <div class="field field--check" data-addon hidden>
+      <input id="f-addon" name="addon" type="checkbox" value="yes" />
+      <label for="f-addon" data-addon-label>Add-on</label>
+    </div>
+    <div class="field">
+      <label for="f-date">Preferred date</label>
+      <input id="f-date" name="date" type="date" min={today} required aria-describedby="e-date" />
+      <p class="field__error" id="e-date" aria-live="polite"></p>
+    </div>
+    <div class="field">
+      <label for="f-time">Preferred time</label>
+      <input id="f-time" name="time" type="time" step="900" required aria-describedby="e-time h-time" />
+      <p class="field__hint" id="h-time">Business hours {pricing.hours.label}. Bookings outside these hours may incur a {pricing.outOfHoursSurcharge}% surcharge.</p>
+      <p class="field__error" id="e-time" aria-live="polite"></p>
+    </div>
+    <div class="field field--full">
+      <label for="f-location">Location or postcode</label>
+      <input id="f-location" name="location" type="text" autocomplete="postal-code" required maxlength="160" placeholder="Central London postcode, or the name of your hotel" aria-describedby="e-location" />
+      <p class="field__error" id="e-location" aria-live="polite"></p>
+    </div>
+    <div class="field field--full">
+      <label for="f-notes">Additional information <span class="opt">(optional)</span></label>
+      <textarea id="f-notes" name="notes" rows="4" maxlength="2000" placeholder="Preferred pressure, areas of focus, access details or anything else you would like us to know"></textarea>
+    </div>
+
+    <!-- Honeypot: hidden from people, tempting to bots -->
+    <div class="hp" aria-hidden="true">
+      <label for="f-company">Company</label>
+      <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="estimate" data-estimate aria-live="polite" hidden>
+      <div class="estimate__row">
+        <span class="estimate__label">Estimated price</span>
+        <span class="estimate__value" data-estimate-total></span>
+      </div>
+      <div class="estimate__lines" data-estimate-lines></div>
+    </div>
+    <script type="application/json" data-booking-data set:html={JSON.stringify(bookingData)}></script>
+
+    <p class="form__status" role="alert" data-booking-status hidden></p>
+
+    <div class="form__foot">
+      <button type="submit" class="btn btn--gold btn--lg" data-booking-submit><span>Send Booking Request</span></button>
+      <p class="form__legal">
+        Sending this form submits a request — it is not a confirmed booking. We will contact you personally to confirm availability and arrange your appointment.
+        Your details are used only for this purpose, as set out in our <a href="/privacy-policy/">Privacy Policy</a>.
+      </p>
+    </div>
+  </form>
+
+  <div class="form-success" data-booking-success tabindex="-1" hidden>
+    <p class="eyebrow">Request received</p>
+    <h2 class="form-success__title">Thank you<span data-success-name></span>.</h2>
+    <p><strong>Your request has been received and is awaiting confirmation.</strong> It is not yet a confirmed booking — we will be in touch personally to confirm availability and agree the details of your appointment.</p>
+    <dl data-success-summary></dl>
+    <a href="/massage-collection/" class="link-arrow">Return to the Collection</a>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-booking]');
+  const form = root?.querySelector<HTMLFormElement>('[data-booking-form]');
+  if (root && form) {
+    const status = root.querySelector<HTMLElement>('[data-booking-status]')!;
+    const success = root.querySelector<HTMLElement>('[data-booking-success]')!;
+    const submit = root.querySelector<HTMLButtonElement>('[data-booking-submit]')!;
+    const submitLabel = submit.querySelector('span')!;
+    const fields = ['name', 'email', 'phone', 'experience', 'duration', 'date', 'time', 'location'] as const;
+    type Field = (typeof fields)[number];
+    const el = (n: string) => form.elements.namedItem(n) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+    // Pre-select the experience when arriving from a treatment page (?experience=slug)
+    const wanted = new URLSearchParams(location.search).get('experience');
+    if (wanted && [...(el('experience') as HTMLSelectElement).options].some((o) => o.value === wanted)) el('experience').value = wanted;
+
+    // ── Live price estimate, driven by the collection's published prices
+    type Opt = { minutes: number; price: number | null };
+    type T = { name: string; options: Opt[]; addOn: { label: string; price: number | null } | null; note: string | null };
+    const cfg = JSON.parse(root.querySelector('[data-booking-data]')!.textContent || '{}') as { hours: { label: string; open: number; close: number }; surcharge: number; taxi: number; treatments: Record<string, T> };
+    const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+    const duration = el('duration') as HTMLSelectElement;
+    const addonWrap = root.querySelector<HTMLElement>('[data-addon]')!;
+    const addon = el('addon') as HTMLInputElement;
+    const addonLabel = root.querySelector<HTMLElement>('[data-addon-label]')!;
+    const estimate = root.querySelector<HTMLElement>('[data-estimate]')!;
+    const estTotal = root.querySelector<HTMLElement>('[data-estimate-total]')!;
+    const estLines = root.querySelector<HTMLElement>('[data-estimate-lines]')!;
+    const current = () => cfg.treatments[el('experience').value] as T | undefined;
+    let estimateText = '';
+
+    const syncExperience = () => {
+      const t = current();
+      duration.replaceChildren();
+      if (!t) {
+        duration.add(new Option(el('experience').value === 'unsure' ? 'To be agreed with you' : 'Choose an experience first', ''));
+        duration.disabled = true;
+      } else {
+        if (t.options.length > 1) duration.add(new Option('Please select', ''));
+        t.options.forEach((o) => duration.add(new Option(`${o.minutes} minutes — ${o.price === null ? 'price on request' : gbp(o.price)}`, String(o.minutes))));
+        duration.disabled = false;
+      }
+      addon.checked = false;
+      addonWrap.hidden = !t?.addOn;
+      if (t?.addOn) addonLabel.textContent = `Add ${t.addOn.label} — ${t.addOn.price === null ? 'price on request' : '+ ' + gbp(t.addOn.price)}`;
+      document.getElementById('e-duration')!.textContent = '';
+      duration.removeAttribute('aria-invalid');
+      syncEstimate();
+    };
+
+    const syncEstimate = () => {
+      const t = current();
+      const opt = t?.options.find((o) => String(o.minutes) === duration.value);
+      if (!t || !opt) { estimate.hidden = true; estimateText = ''; return; }
+      const lines: [string, boolean][] = [[`${t.name} · ${opt.minutes} minutes — ${opt.price === null ? 'price on request' : gbp(opt.price)}`, false]];
+      let total: number | null = opt.price;
+      if (t.addOn && addon.checked) {
+        lines.push([`${t.addOn.label} add-on — ${t.addOn.price === null ? 'price on request' : '+ ' + gbp(t.addOn.price)}`, false]);
+        total = total === null || t.addOn.price === null ? null : total + t.addOn.price;
+      }
+      if (t.note) lines.push([t.note, true]);
+      const time = el('time').value;
+      if (time) {
+        const m = +time.slice(0, 2) * 60 + +time.slice(3, 5);
+        if (!(m >= cfg.hours.open || m <= cfg.hours.close)) lines.push([`Your preferred time is outside business hours (${cfg.hours.label}) — a ${cfg.surcharge}% surcharge may apply.`, true]);
+      }
+      lines.push([`Excludes transport: Central London bookings may incur a ${gbp(cfg.taxi)} taxi fare; other areas subject to quote.`, false]);
+      lines.push(['An estimate only — the final price is confirmed with you before your appointment is arranged.', false]);
+      estimateText = total === null ? 'Price on request' : gbp(total);
+      estTotal.textContent = estimateText;
+      estLines.replaceChildren(...lines.map(([txt, warn]) => { const p = document.createElement('p'); p.textContent = txt; if (warn) p.className = 'estimate__warn'; return p; }));
+      estimate.hidden = false;
+    };
+
+    el('experience').addEventListener('change', syncExperience);
+    duration.addEventListener('change', syncEstimate);
+    addon.addEventListener('change', syncEstimate);
+    el('time').addEventListener('change', syncEstimate);
+    syncExperience();
+
+    const rules: Record<Field, (v: string) => string> = {
+      duration: (v) => (current() && !v ? 'Please choose a duration.' : ''),
+      name: (v) => (v.trim().length < 2 ? 'Please enter your full name.' : ''),
+      email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? '' : 'Please enter a valid email address.'),
+      phone: (v) => (v.replace(/\D/g, '').length >= 7 && /^[+\d\s().-]+$/.test(v.trim()) ? '' : 'Please enter a valid phone number.'),
+      experience: (v) => (v ? '' : 'Please choose an experience, or ask for a recommendation.'),
+      date: (v) => {
+        if (!v) return 'Please choose your preferred date.';
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        return new Date(v + 'T00:00:00') < today ? 'Please choose today or a future date.' : '';
+      },
+      time: (v) => (v ? '' : 'Please choose your preferred time.'),
+      location: (v) => (v.trim().length < 2 ? 'Please enter your postcode or location.' : ''),
+    };
+
+    const check = (n: Field) => {
+      const input = el(n);
+      const msg = rules[n](input.value);
+      const err = document.getElementById(`e-${n}`);
+      if (err) err.textContent = msg;
+      if (msg) input.setAttribute('aria-invalid', 'true');
+      else input.removeAttribute('aria-invalid');
+      return !msg;
+    };
+
+    fields.forEach((n) => {
+      el(n).addEventListener('blur', () => check(n));
+      el(n).addEventListener('input', () => { if (el(n).getAttribute('aria-invalid')) check(n); });
+    });
+
+    const setLoading = (on: boolean) => {
+      submit.disabled = on;
+      submit.classList.toggle('is-loading', on);
+      submit.setAttribute('aria-busy', String(on));
+      submitLabel.textContent = on ? 'Sending' : 'Send Booking Request';
+    };
+    const showError = (msg: string) => { status.textContent = msg; status.hidden = false; };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.hidden = true;
+      const invalid = fields.filter((n) => !check(n));
+      if (invalid.length) {
+        el(invalid[0]).focus();
+        return;
+      }
+      const data = Object.fromEntries(new FormData(form).entries());
+      setLoading(true);
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok || !json.ok) {
+          if (json.fields) Object.entries(json.fields as Record<string, string>).forEach(([n, m]) => {
+            const err = document.getElementById(`e-${n}`);
+            if (err) { err.textContent = m; el(n)?.setAttribute('aria-invalid', 'true'); }
+          });
+          throw new Error(json.message || 'We could not send your request. Please try again in a moment.');
+        }
+        // Success — acknowledged, awaiting confirmation.
+        const first = String(data.name).trim().split(/\s+/)[0];
+        root.querySelector('[data-success-name]')!.textContent = first ? `, ${first}` : '';
+        const dl = root.querySelector('[data-success-summary]')!;
+        const exp = (el('experience') as HTMLSelectElement).selectedOptions[0]?.textContent ?? '';
+        const when = new Date(`${data.date}T${data.time}`);
+        const picked = cfg.treatments[String(data.experience)]?.name ?? exp;
+        const rows: [string, string][] = [
+          ['Experience', picked],
+          ...(data.duration ? [['Duration', `${data.duration} minutes${data.addon ? ' + ' + (cfg.treatments[String(data.experience)]?.addOn?.label ?? 'add-on') : ''}`] as [string, string]] : []),
+          ...(estimateText ? [['Estimate', `${estimateText} (excl. transport; to be confirmed)`] as [string, string]] : []),
+          ['Requested', isNaN(+when) ? `${data.date} ${data.time}` : when.toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })],
+          ['Location', String(data.location)],
+          ['Status', 'Awaiting confirmation'],
+        ];
+        dl.replaceChildren(...rows.flatMap(([k, v]) => {
+          const dt = document.createElement('dt'); dt.textContent = k;
+          const dd = document.createElement('dd'); dd.textContent = v;
+          return [dt, dd];
+        }));
+        form.hidden = true;
+        success.hidden = false;
+        success.focus({ preventScroll: true });
+        success.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        form.reset();
+        syncExperience();
+      } catch (err) {
+        showError(err instanceof TypeError ? 'We could not reach the server. Please check your connection and try again.' : (err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    });
+  }
+</script>

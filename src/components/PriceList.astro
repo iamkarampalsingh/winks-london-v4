@@ -1,0 +1,11 @@
+---
+import { gbp, type Treatment } from '../data/treatments';
+interface Props { t: Treatment; compact?: boolean }
+const { t, compact = false } = Astro.props;
+---
+<dl class:list={['prices', { 'prices--compact': compact }]}>
+  {t.options.map((x) => (
+    <div><dt>{x.minutes} min</dt><dd>{gbp(x.price)}</dd></div>
+  ))}
+  {t.addOn && <div class="prices__add"><dt>{t.addOn.label}</dt><dd>{t.addOn.price === null ? 'Price on request' : `+ ${gbp(t.addOn.price)}`}</dd></div>}
+</dl>

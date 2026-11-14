@@ -1,0 +1,61 @@
+---
+/**
+ * Desktop navigation — full-screen, chapter-based.
+ * Left: image stage that changes with the hovered chapter.
+ * Right: numbered chapters in large editorial type.
+ */
+import Pic from './Pic.astro';
+import { navigation, bookingLink, legalLinks } from '../data/navigation';
+import { site } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const currentIndex = Math.max(0, navigation.findIndex((n) => isCurrent(n.href)));
+---
+<div class="menu menu--desktop" id="menu-desktop" data-menu="desktop" role="dialog" aria-modal="true" aria-label="Main menu" hidden data-lenis-prevent>
+  <div class="menu__bg" data-menu-bg></div>
+  <div class="menu__inner">
+    <div class="menu__media" data-menu-media aria-hidden="true">
+      <div class="menu__media-inner" data-menu-media-inner>
+        {navigation.map((n, i) => (
+          <div class:list={['menu__image', { 'is-active': i === currentIndex }]} data-menu-image={i}>
+            <Pic src={n.image} alt="" sizes="40vw" widths={[480, 768, 1080]} position={n.position} />
+          </div>
+        ))}
+      </div>
+      <p class="menu__caption">
+        <span class="menu__caption-num" data-menu-caption-num>Chapter {navigation[currentIndex].number}</span>
+        <span class="menu__caption-text" data-menu-caption>{navigation[currentIndex].note}</span>
+      </p>
+    </div>
+
+    <nav class="menu__nav" aria-label="Main">
+      <ol class="menu__list" data-current={currentIndex}>
+        {navigation.map((n, i) => (
+          <li class="menu__item">
+            <span class="menu__rule" data-menu-rule></span>
+            <a href={n.href} class="menu__link" data-menu-link={i} data-note={n.note} data-number={n.number} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+              <span class="menu__num" data-menu-fade>{n.number}</span>
+              <span class="menu__title-mask"><span class="menu__title" data-menu-title>{n.label}</span></span>
+              <span class="menu__note">{n.note}</span>
+            </a>
+          </li>
+        ))}
+        <li class="menu__item menu__item--end" aria-hidden="true"><span class="menu__rule" data-menu-rule></span></li>
+      </ol>
+
+      <div class="menu__foot">
+        <a href={bookingLink.href} class="btn btn--gold" data-menu-fade>
+          <span>{bookingLink.label}</span>
+        </a>
+        <p class="menu__meta" data-menu-fade>
+          <span>Outcall massage</span>
+          <span>{site.region}</span>
+        </p>
+        <p class="menu__legal" data-menu-fade>
+          {legalLinks.map((l) => <a href={l.href} class="link-u">{l.label}</a>)}
+        </p>
+      </div>
+    </nav>
+  </div>
+</div>

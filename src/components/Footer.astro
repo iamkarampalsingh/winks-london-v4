@@ -1,0 +1,59 @@
+---
+import Wordmark from './Wordmark.astro';
+import { navigation, bookingLink, legalLinks } from '../data/navigation';
+import { treatments } from '../data/treatments';
+import { site, placeholder } from '../data/site';
+const year = new Date().getFullYear();
+const { phone, email, hours } = site.contact;
+---
+<footer class="footer" data-footer>
+  <div class="footer__inner" data-footer-inner>
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="/" aria-label="WINKS London — home"><Wordmark tagline /></a>
+        <p class="footer__desc">{site.description}</p>
+        <a href={bookingLink.href} class="btn btn--gold"><span>{bookingLink.label}</span></a>
+      </div>
+
+      <nav class="footer__col" aria-label="Footer">
+        <h2 class="footer__h">Navigate</h2>
+        <ul>
+          {navigation.map((n) => <li><a href={n.href} class="link-u">{n.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <nav class="footer__col" aria-label="Massage collection">
+        <h2 class="footer__h">Massage Collection</h2>
+        <ul>
+          {treatments.map((t) => <li><a href={`/massage-collection/${t.slug}/`} class="link-u">{t.name}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <h2 class="footer__h">Contact</h2>
+        <ul>
+          <li>{phone ? <a href={`tel:${phone.replace(/\s+/g, '')}`} class="link-u">{phone}</a> : <span class="ph">{placeholder('Telephone')}</span>}</li>
+          <li>{email ? <a href={`mailto:${email}`} class="link-u">{email}</a> : <span class="ph">{placeholder('Email')}</span>}</li>
+          <li>{hours ? hours : <span class="ph">{placeholder('Opening hours')}</span>}</li>
+          <li>{site.region}</li>
+          <li><a href="/contact/" class="link-u">Booking enquiry form</a></li>
+        </ul>
+        {site.social.length > 0 && (
+          <ul class="footer__social">
+            {site.social.map((s) => <li><a href={s.href} class="link-u" rel="noopener" target="_blank">{s.label}</a></li>)}
+          </ul>
+        )}
+      </div>
+    </div>
+
+    <div class="footer__mark" aria-hidden="true"><span>WINKS</span></div>
+
+    <div class="footer__bottom">
+      <p>© {year} WINKS London. All rights reserved.</p>
+      <ul>
+        {legalLinks.map((l) => <li><a href={l.href} class="link-u">{l.label}</a></li>)}
+        <li><a href="#top" class="link-u" data-to-top>Back to top ↑</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,17 @@
+/* WINKS London — design system entry. Each partial owns one concern;
+   responsive rules live beside the component they adapt. */
+@import '@fontsource/cormorant-garamond/latin-300.css';
+@import '@fontsource/cormorant-garamond/latin-400.css';
+@import '@fontsource/cormorant-garamond/latin-300-italic.css';
+@import '@fontsource/cormorant-garamond/latin-400-italic.css';
+@import '@fontsource/jost/latin-300.css';
+@import '@fontsource/jost/latin-400.css';
+@import '@fontsource/jost/latin-500.css';
+
+@import './tokens.css';
+@import './typography.css';
+@import './animations.css';
+@import './navigation.css';
+@import './components.css';
+@import './home.css';
+@import './pages.css';

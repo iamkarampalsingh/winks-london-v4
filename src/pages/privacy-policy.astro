@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Privacy Policy' }];
+---
+<BaseLayout title="Privacy Policy" description="How WINKS London collects, uses and protects personal information submitted through this website." breadcrumbs={crumbs}>
+  <article class="legal">
+    <header class="legal__head">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="h2" data-split>Privacy Policy</h1>
+      <p class="draft" data-fade>Draft template. This page must be reviewed and completed with WINKS London’s registered business details and approved by a legal adviser before launch.</p>
+    </header>
+    <div class="legal__body" data-fade data-delay="0.2">
+      <p>WINKS London (“we”, “us”) respects your privacy. This policy explains what personal information we collect through this website, why we collect it and how it is handled.</p>
+      <h2>Information we collect</h2>
+      <p>When you send a booking request we collect the details you provide: your name, email address, phone number, preferred massage experience, preferred date and time, location or postcode, and any additional information you choose to share.</p>
+      <h2>How we use your information</h2>
+      <ul>
+        <li>To respond to your enquiry and confirm availability.</li>
+        <li>To arrange and deliver your appointment.</li>
+        <li>To contact you about that appointment.</li>
+      </ul>
+      <p>We do not sell your personal information, and we do not use it for marketing without your consent.</p>
+      <h2>Lawful basis</h2>
+      <p>We process booking information because it is necessary to take steps at your request before entering into an agreement with you, and to provide the service you have asked for.</p>
+      <h2>Sharing and storage</h2>
+      <p>Your request is delivered to us through a secure form-handling or email service acting on our behalf. Details are retained only for as long as necessary to arrange your appointment and meet our legal obligations.</p>
+      <h2>Cookies</h2>
+      <p>This website uses browser session storage solely to remember that the opening animation has been shown. It does not use advertising or tracking cookies.</p>
+      <h2>Your rights</h2>
+      <p>Under UK data protection law you may ask to access, correct or delete the personal information we hold about you, or object to its use. To make a request, please get in touch via our <a href="/contact/">contact page</a>. You also have the right to complain to the Information Commissioner’s Office (ico.org.uk).</p>
+      <h2>Data controller</h2>
+      <p><span class="ph">Registered business name and contact address — to be confirmed</span></p>
+    </div>
+  </article>
+</BaseLayout>

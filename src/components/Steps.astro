@@ -1,0 +1,15 @@
+---
+import { steps } from '../data/steps';
+interface Props { long?: boolean }
+const { long = false } = Astro.props;
+---
+<ol class="steps" data-stagger>
+  {steps.map((s) => (
+    <li class="step">
+      <span class="step__num" aria-hidden="true">{s.number}</span>
+      <span class="step__rule" aria-hidden="true"></span>
+      <h3 class="step__title">{s.title}</h3>
+      <p class="step__text">{long ? s.long : s.text}</p>
+    </li>
+  ))}
+</ol>

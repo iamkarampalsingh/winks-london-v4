@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ImageReveal from '../../components/ImageReveal.astro';
+import BookingCTA from '../../components/BookingCTA.astro';
+import PriceList from '../../components/PriceList.astro';
+import { treatments, pricing, priceFrom, fromLabel, durationLabel, addOnLabel } from '../../data/treatments';
+
+export function getStaticPaths() {
+  return treatments.map((t) => ({ params: { slug: t.slug }, props: { t } }));
+}
+const { t } = Astro.props;
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Massage Collection', href: '/massage-collection/' }, { label: t.name }];
+const idx = treatments.findIndex((o) => o.slug === t.slug);
+const others = [1, 2, 3, 4].map((n) => treatments[(idx + n) % treatments.length]);
+const origin = Astro.site ?? new URL(Astro.url.origin);
+const low = priceFrom(t);
+const known = t.options.filter((x) => x.price !== null);
+const schema = [{
+  '@type': 'Service',
+  name: t.name,
+  serviceType: 'Outcall massage',
+  provider: { '@type': 'Organization', name: 'WINKS London', url: new URL('/', origin).href },
+  areaServed: { '@type': 'City', name: 'London' },
+  url: new URL(`/massage-collection/${t.slug}/`, origin).href,
+  ...(low !== null && { offers: { '@type': 'AggregateOffer', priceCurrency: 'GBP', lowPrice: low, highPrice: Math.max(...known.map((x) => x.price as number)), offerCount: known.length } }),
+}];
+const summary = `${t.name}: ${durationLabel(t)}, ${fromLabel(t).toLowerCase()}.`;
+---
+<BaseLayout
+  title={`${t.name} | Prices & Booking | WINKS London`}
+  description={`${summary} An outcall massage experience by WINKS London, delivered to your door in Central London.`}
+  breadcrumbs={crumbs}
+  schema={schema}
+>
+  <PageHero chapter={`Experience ${t.number}`} kicker={t.note ?? fromLabel(t)} title={t.name} image={t.image} crumbs={crumbs} />
+
+  <div id="content" class="detail">
+    <aside class="detail__aside">
+      <p class="eyebrow" data-fade>Appointment</p>
+      <dl class="facts" data-stagger>
+        <div><dt>Experience</dt><dd>{t.name}</dd></div>
+        <div><dt>Duration</dt><dd>{durationLabel(t)}</dd></div>
+        <div><dt>Price</dt><dd>{fromLabel(t)}</dd></div>
+        {t.addOn && <div><dt>Add-on</dt><dd>{addOnLabel(t)}</dd></div>}
+        {t.note && <div><dt>Availability</dt><dd>{t.note}</dd></div>}
+        <div><dt>Hours</dt><dd>{pricing.hours.label}</dd></div>
+        <div><dt>Location</dt><dd>Outcall — your home or hotel in Central London</dd></div>
+        <div><dt>Booking</dt><dd>By request; confirmed personally</dd></div>
+      </dl>
+      <a href={`/contact/?experience=${t.slug}`} class="btn btn--gold" data-fade><span>Request This Experience</span></a>
+    </aside>
+
+    <div class="detail__main">
+      <div>
+        <p class="eyebrow" data-fade style="margin-bottom:1.5rem">Durations &amp; prices</p>
+        <h2 class="statement__text" data-split>{t.name}</h2>
+        <div data-fade style="margin-top:2rem"><PriceList t={t} /></div>
+      </div>
+      {t.description && <div class="prose" data-stagger>{t.description.map((p) => <p style="max-width:54ch">{p}</p>)}</div>}
+      <ImageReveal src={t.image} alt={t.alt} ratio="4 / 5" dir="up" />
+      <div>
+        <p class="eyebrow" data-fade style="margin-bottom:1.5rem">Pricing terms</p>
+        <ul class="terms-list" data-stagger>
+          {pricing.notes.map((n) => <li>{n}</li>)}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <section class="others" aria-labelledby="others-title">
+    <p class="eyebrow" data-fade>Continue exploring</p>
+    <h2 class="h2" id="others-title" data-split style="margin-top:1.5rem">More from the <em>collection</em></h2>
+    <div class="others__grid" data-stagger>
+      {others.map((o) => (
+        <a href={`/massage-collection/${o.slug}/`} class="other">
+          <ImageReveal src={o.image} alt="" ratio="4 / 5" sizes="(min-width: 900px) 22vw, 44vw" parallax={false} />
+          <span class="coll-index__n">{o.number} · {fromLabel(o)}</span>
+          <span class="other__t">{o.name}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <BookingCTA title="Make time for yourself." image={t.image} />
+</BaseLayout>

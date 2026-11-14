@@ -1,0 +1,41 @@
+---
+/**
+ * Individual area pages — generated only for CONFIRMED areas listed in
+ * src/data/locations.ts. With an empty list, no pages are produced.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import BookingCTA from '../../components/BookingCTA.astro';
+import { images } from '../../data/images';
+import { areas, type Area } from '../../data/locations';
+import { treatments, fromLabel } from '../../data/treatments';
+
+export function getStaticPaths() {
+  return areas.map((a) => ({ params: { slug: a.slug }, props: { a } }));
+}
+const { a } = Astro.props as { a: Area };
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Areas We Cover', href: '/areas-we-cover/' }, { label: a.name }];
+---
+<BaseLayout title={`Outcall Massage in ${a.name} | WINKS London`} description={`WINKS London provides outcall massage in ${a.name} (${a.postcodes}), Central London. ${a.intro}`} breadcrumbs={crumbs}>
+  <PageHero chapter="Central London" kicker="Outcall massage in" title={a.name} intro={a.intro} image={images.london} crumbs={crumbs} compact />
+  <div id="content">
+    <section class="statement">
+      <p class="eyebrow" data-fade>{a.postcodes}</p>
+      <div>
+        <h2 class="statement__text" data-split>The WINKS London experience, delivered to your door in <em>{a.name}</em>.</h2>
+        <div class="statement__foot" data-stagger>
+          <p>{a.intro}</p>
+          <p>Share your address and preferred time and we will confirm availability with you personally.</p>
+        </div>
+      </div>
+    </section>
+    <nav class="coll-index" aria-label="Massage collection">
+      <ol data-stagger>
+        {treatments.map((t) => (
+          <li><a href={`/massage-collection/${t.slug}/`}><span class="coll-index__n">{t.number}</span><span class="coll-index__t">{t.name}</span><span class="coll-index__d">{fromLabel(t)}</span></a></li>
+        ))}
+      </ol>
+    </nav>
+  </div>
+  <BookingCTA />
+</BaseLayout>

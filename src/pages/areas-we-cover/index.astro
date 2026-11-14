@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Split from '../../components/Split.astro';
+import ImageReveal from '../../components/ImageReveal.astro';
+import BookingCTA from '../../components/BookingCTA.astro';
+import { images } from '../../data/images';
+import { areas } from '../../data/locations';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Areas We Cover' }];
+---
+<BaseLayout
+  title="Areas We Cover | Outcall Massage Across Central London"
+  description="WINKS London provides outcall massage to private residences and hotels across Central London. Share your postcode and we will confirm availability for your address."
+  breadcrumbs={crumbs}
+>
+  <PageHero chapter="Chapter 06" kicker="An elevated experience across" title="Central London" intro="We travel to you — private residences and hotels across Central London." image={images.london} position="30% center" crumbs={crumbs} />
+
+  <div id="content">
+    <section class="statement" aria-labelledby="areas-intro">
+      <p class="eyebrow" data-fade>Our coverage</p>
+      <div>
+        <h2 class="statement__text" id="areas-intro" data-split>WINKS London is an outcall service. Wherever you are staying in <em>Central London</em>, the experience comes to your door.</h2>
+        <div class="statement__foot" data-stagger>
+          <p>Our therapists visit private homes, apartments and hotel suites across Central London, at a time arranged around you.</p>
+          <p>Availability can vary by address and time of day, so we confirm every location individually before an appointment is arranged.</p>
+        </div>
+      </div>
+    </section>
+
+    {areas.length > 0 && (
+      <section aria-labelledby="areas-list">
+        <div class="section-head" style="padding-top:0">
+          <p class="eyebrow" data-fade>Confirmed areas</p>
+          <h2 class="h2" id="areas-list" data-split>Where we <em>visit</em></h2>
+        </div>
+        <nav class="coll-index" aria-label="Areas we cover" style="margin-top:3rem">
+          <ol data-stagger>
+            {areas.map((a, i) => (
+              <li>
+                <a href={`/areas-we-cover/${a.slug}/`}>
+                  <span class="coll-index__n">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="coll-index__t">{a.name}</span>
+                  <span class="coll-index__d">{a.postcodes}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </section>
+    )}
+
+    <Split image={images.london} alt="London’s skyline at dusk, seen from a private residence" position="18% center" number="01" eyebrow="Your address" title="Check your postcode" ratio="3 / 4">
+      <p class="lead">The simplest way to know whether we can visit you is to ask.</p>
+      <p>Include your postcode or hotel when you send a booking request. We will confirm whether your address falls within our Central London coverage before anything else is arranged.</p>
+      {areas.length === 0 && <p class="note">A full list of the neighbourhoods we serve will be published here once confirmed.</p>}
+      <p><a href="/contact/" class="btn btn--gold"><span>Check Availability</span></a></p>
+    </Split>
+
+    <Split image={images.space} alt="A softly lit suite prepared for the evening" number="02" eyebrow="Homes and hotels" title="Wherever you are staying" reverse ratio="3 / 2" wide>
+      <p class="lead">A private residence. A serviced apartment. A hotel suite.</p>
+      <p>All that is needed is a quiet room with a little space. Your therapist brings everything else, and leaves the room exactly as it was found.</p>
+      <p><a href="/our-experience/" class="link-arrow">Our Experience</a></p>
+    </Split>
+  </div>
+
+  <BookingCTA title="We come to you." text="Share your Central London postcode and preferred time — we will confirm availability personally." image={images.london} position="60% center" />
+</BaseLayout>

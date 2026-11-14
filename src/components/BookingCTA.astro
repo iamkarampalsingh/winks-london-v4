@@ -1,0 +1,26 @@
+---
+import Pic from './Pic.astro';
+import type { ImageMetadata } from 'astro';
+import { images } from '../data/images';
+interface Props { title?: string; text?: string; image?: ImageMetadata; label?: string; href?: string; position?: string }
+const {
+  title = 'Make time for yourself.',
+  text = 'Discover a more considered approach to relaxation with WINKS London.',
+  image = images.cta,
+  label = 'Book Your Experience',
+  href = '/contact/',
+  position = 'center',
+} = Astro.props;
+---
+<section class="cta" aria-labelledby="cta-title">
+  <div class="cta__media" data-scale-scroll aria-hidden="true">
+    <Pic src={image} alt="" sizes="100vw" position={position} />
+  </div>
+  <div class="cta__content">
+    <p class="eyebrow" data-fade>Your invitation</p>
+    <h2 class="cta__title" id="cta-title" data-split>{title}</h2>
+    <p class="cta__text" data-fade data-delay="0.15">{text}</p>
+    <a href={href} class="btn btn--gold btn--lg" data-fade data-delay="0.25"><span>{label}</span></a>
+    <p class="cta__note" data-fade data-delay="0.35">Every request is confirmed personally before your appointment is arranged.</p>
+  </div>
+</section>

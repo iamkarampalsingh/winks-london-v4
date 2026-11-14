@@ -1,0 +1,9 @@
+---
+interface Props { tagline?: boolean; class?: string }
+const { tagline = false, class: cls } = Astro.props;
+---
+<span class:list={['wordmark', cls]}>
+  {tagline && <span class="wordmark__tag">“The Art of Seductive Touch”</span>}
+  <span class="wordmark__w">WINKS</span>
+  <span class="wordmark__l">LONDON</span>
+</span>

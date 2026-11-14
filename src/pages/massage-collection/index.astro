@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ImageReveal from '../../components/ImageReveal.astro';
+import BookingCTA from '../../components/BookingCTA.astro';
+import PriceList from '../../components/PriceList.astro';
+import { images } from '../../data/images';
+import { treatments, pricing, fromLabel, durationLabel, countWord } from '../../data/treatments';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Massage Collection' }];
+const ratios = ['4 / 5', '1 / 1', '4 / 5', '5 / 6', '3 / 4'];
+const origin = Astro.site ?? new URL(Astro.url.origin);
+const schema = [{
+  '@type': 'ItemList',
+  name: 'WINKS London Massage Collection',
+  itemListElement: treatments.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.name, url: new URL(`/massage-collection/${t.slug}/`, origin).href })),
+}];
+---
+<BaseLayout
+  title="Massage Collection & Prices | WINKS London Outcall Massage"
+  description={`The WINKS London massage collection: ${countWord.toLowerCase()} outcall massage experiences in Central London, with durations and prices for each.`}
+  breadcrumbs={crumbs}
+  schema={schema}
+>
+  <PageHero chapter="Chapter 03" kicker="The Massage" title="Collection" intro={`${countWord} experiences, with durations and prices — all delivered to your door across Central London.`} image={images.collectionCover} crumbs={crumbs} />
+
+  <div id="content">
+    <section class="statement" aria-labelledby="coll-intro">
+      <p class="eyebrow" data-fade>The collection</p>
+      <div>
+        <h2 class="statement__text" id="coll-intro" data-split>The complete WINKS collection — every experience, every duration, <em>clearly priced</em>.</h2>
+        <div class="statement__foot" data-stagger>
+          <p>Choose the experience and the length of appointment that suit the evening you have in mind. If you are unsure, we will be glad to recommend one.</p>
+          <p>Prices exclude transport. We confirm the final price and availability for your address before your appointment is arranged.</p>
+        </div>
+      </div>
+    </section>
+
+    <nav class="coll-index" aria-label="Massage collection">
+      <ol data-stagger>
+        {treatments.map((t) => (
+          <li>
+            <a href={`#${t.slug}`}>
+              <span class="coll-index__n">{t.number}</span>
+              <span class="coll-index__t">{t.name}</span>
+              <span class="coll-index__d">{fromLabel(t)}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    {treatments.map((t, i) => (
+      <section class:list={['treat', { 'treat--tint': i % 2 === 1 }]} id={t.slug} aria-labelledby={`${t.slug}-title`}>
+        <div class="treat__media">
+          <span class="treat__num" aria-hidden="true" data-speed="0.5">{t.number}</span>
+          <ImageReveal src={t.image} alt={t.alt} ratio={ratios[i % ratios.length]} dir={i % 2 ? 'left' : 'right'} />
+        </div>
+        <div class="treat__text">
+          <p class="eyebrow" data-fade>Experience {t.number}</p>
+          <h2 class="h2" id={`${t.slug}-title`} data-split>{t.name}</h2>
+          {t.note && <p data-fade><span class="tag-note">{t.note}</span></p>}
+          <div class="prose" data-stagger>
+            {t.description?.[0] && <p>{t.description[0]}</p>}
+            <PriceList t={t} />
+            <p class="muted" style="font-size:.86rem">{durationLabel(t)} · Outcall, Central London · Transport not included</p>
+          </div>
+          <div class="treat__actions" data-fade>
+            <a href={`/contact/?experience=${t.slug}`} class="btn btn--gold"><span>Request This Experience</span></a>
+            <a href={`/massage-collection/${t.slug}/`} class="link-arrow">Details<span class="sr-only"> — {t.name}</span></a>
+          </div>
+        </div>
+      </section>
+    ))}
+
+    <section class="statement band" id="pricing-terms" aria-labelledby="terms-title">
+      <p class="eyebrow" data-fade>Pricing terms</p>
+      <div>
+        <h2 class="statement__text" id="terms-title" data-split>Good to know before you <em>book</em>.</h2>
+        <ul class="terms-list" data-stagger style="margin-top:2.5rem">
+          {pricing.notes.map((n) => <li>{n}</li>)}
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <BookingCTA title="Choose your experience." text="Share your preferred experience, date and location — we will confirm every detail with you personally." />
+</BaseLayout>

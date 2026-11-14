@@ -1,0 +1,26 @@
+---
+import Wordmark from './Wordmark.astro';
+import { bookingLink } from '../data/navigation';
+---
+<header class="header" data-header>
+  <a href="/" class="header__logo" aria-label="WINKS London — home">
+    <Wordmark />
+  </a>
+  <div class="header__actions">
+    <a href={bookingLink.href} class="header__book link-u">Book</a>
+    <button
+      class="menu-toggle"
+      type="button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-haspopup="dialog"
+      aria-label="Open menu"
+    >
+      <span class="menu-toggle__label" aria-hidden="true">
+        <span>Menu</span>
+        <span>Close</span>
+      </span>
+      <span class="menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,45 @@
+---
+/**
+ * Mobile navigation — a dedicated full-screen layout (not a scaled-down
+ * desktop menu): stacked chapters, large touch targets, pinned booking CTA.
+ */
+import Pic from './Pic.astro';
+import { navigation, bookingLink, legalLinks } from '../data/navigation';
+import { images } from '../data/images';
+import { site } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+<div class="menu menu--mobile" id="menu-mobile" data-menu="mobile" role="dialog" aria-modal="true" aria-label="Main menu" hidden>
+  <div class="menu__bg" data-menu-bg>
+    <div class="mmenu__backdrop" aria-hidden="true">
+      <Pic src={images.introDetail} alt="" sizes="100vw" widths={[480, 768]} />
+    </div>
+  </div>
+  <div class="mmenu__scroll" data-lenis-prevent>
+    <p class="mmenu__eyebrow" data-menu-fade>Chapters</p>
+    <nav aria-label="Main">
+      <ol class="mmenu__list">
+        {navigation.map((n) => (
+          <li class="mmenu__item">
+            <span class="menu__rule" data-menu-rule></span>
+            <a href={n.href} class="mmenu__link" aria-current={isCurrent(n.href) ? 'page' : undefined}>
+              <span class="mmenu__num" data-menu-fade>{n.number}</span>
+              <span class="menu__title-mask"><span class="mmenu__title" data-menu-title>{n.label}</span></span>
+              <span class="mmenu__arrow" data-menu-fade aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+        <li class="mmenu__item" aria-hidden="true"><span class="menu__rule" data-menu-rule></span></li>
+      </ol>
+    </nav>
+    <div class="mmenu__foot">
+      <a href={bookingLink.href} class="btn btn--gold btn--block" data-menu-fade><span>{bookingLink.label}</span></a>
+      <p class="mmenu__meta" data-menu-fade>Outcall massage · {site.region}</p>
+      <p class="mmenu__legal" data-menu-fade>
+        {legalLinks.map((l) => <a href={l.href}>{l.label}</a>)}
+      </p>
+    </div>
+  </div>
+</div>

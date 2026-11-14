@@ -1,0 +1,69 @@
+---
+/**
+ * Homepage "Massage Collection" — pinned, scroll-driven sequence.
+ * Markup is a plain, readable list; scripts/collection.ts adds the motion.
+ */
+import Pic from './Pic.astro';
+import PriceList from './PriceList.astro';
+import { treatments, countWord } from '../data/treatments';
+// The homepage sequence features the first six; the full list lives on /massage-collection/.
+const featured = treatments.slice(0, 6);
+import { images } from '../data/images';
+const total = String(featured.length).padStart(2, '0');
+---
+<section class="mc" id="collection" data-mc aria-labelledby="mc-title">
+  <div class="mc__pin" data-mc-pin>
+    <div class="mc__head">
+      <p class="eyebrow mc__eyebrow" data-mc-lead>Chapter 03 — The Collection</p>
+      <h2 class="mc__title" id="mc-title">
+        <span class="mc__title-a" data-mc-title-a>The Massage</span>
+        <span class="mc__title-b" data-mc-title-b><em>Collection</em></span>
+      </h2>
+      <p class="mc__lead" data-mc-lead>
+        {countWord} experiences, each delivered to your door with the same quiet attention to detail.
+      </p>
+    </div>
+
+    <div class="mc__track" data-mc-track>
+      <div class="mc__cover">
+        <div class="mc__frame" data-mc-frame>
+          <Pic src={images.collectionCover} alt="A therapist’s hands resting on a guest’s back in a softly lit room" sizes="100vw" />
+        </div>
+        <div class="mc__cover-copy" data-mc-cover-copy>
+          <p class="mc__cover-line">{countWord} experiences.<br /><em>One considered approach.</em></p>
+          <p class="mc__hint"><span>Keep scrolling</span><i aria-hidden="true"></i></p>
+        </div>
+      </div>
+
+      <ol class="mc__panels">
+        {featured.map((t) => (
+          <li class="mc-panel" data-mc-panel>
+            <a href={`/massage-collection/${t.slug}/`} class="mc-panel__media" tabindex="-1" aria-hidden="true">
+              <Pic src={t.image} alt="" sizes="(min-width: 900px) 34vw, 86vw" widths={[480, 768, 928]} />
+            </a>
+            <div class="mc-panel__text">
+              <p class="mc-panel__num" aria-hidden="true">{t.number}</p>
+              <h3 class="mc-panel__name">{t.name}</h3>
+              {t.note && <p class="mc-panel__tag">{t.note}</p>}
+              <div class="mc-panel__prices"><PriceList t={t} compact /></div>
+              <a href={`/massage-collection/${t.slug}/`} class="link-arrow">Details<span class="sr-only"> the {t.name}</span></a>
+            </div>
+          </li>
+        ))}
+        <li class="mc-panel mc-panel--end" data-mc-panel>
+          <div class="mc-panel__text">
+            <p class="eyebrow">All {countWord.toLowerCase()} experiences</p>
+            <p class="mc-panel__endline">Find the experience<br /><em>that suits you.</em></p>
+            <a href="/massage-collection/" class="btn btn--gold"><span>View the Collection</span></a>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="mc__progress" data-mc-progress aria-hidden="true">
+      <span data-mc-count>01</span>
+      <span class="mc__bar"><i data-mc-bar></i></span>
+      <span>{total}</span>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,32 @@
+---
+/** Alternating editorial image + text composition. */
+import ImageReveal from './ImageReveal.astro';
+import type { ImageMetadata } from 'astro';
+interface Props {
+  image: ImageMetadata;
+  alt: string;
+  number?: string;
+  eyebrow?: string;
+  title: string;
+  reverse?: boolean;
+  ratio?: string;
+  position?: string;
+  id?: string;
+  as?: 'h2' | 'h3';
+  wide?: boolean;
+}
+const { image, alt, number, eyebrow, title, reverse = false, ratio = '4 / 5', position, id, as: H = 'h2', wide = false } = Astro.props;
+---
+<section class:list={['split', { 'split--reverse': reverse, 'split--wide': wide }]} id={id}>
+  <div class="split__media">
+    <ImageReveal src={image} alt={alt} ratio={ratio} position={position} dir={reverse ? 'left' : 'right'} />
+    {number && <span class="split__num" aria-hidden="true" data-speed="0.6">{number}</span>}
+  </div>
+  <div class="split__text">
+    {eyebrow && <p class="eyebrow" data-fade>{eyebrow}</p>}
+    <H class="h2 split__title" data-split>{title}</H>
+    <div class="split__body prose" data-stagger>
+      <slot />
+    </div>
+  </div>
+</section>

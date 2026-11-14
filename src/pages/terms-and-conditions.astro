@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Terms & Conditions' }];
+---
+<BaseLayout title="Terms & Conditions" description="The terms that apply to using the WINKS London website and requesting an appointment." breadcrumbs={crumbs}>
+  <article class="legal">
+    <header class="legal__head">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="h2" data-split>Terms & Conditions</h1>
+      <p class="draft" data-fade>Draft template. This page must be reviewed and completed with WINKS London’s registered business details and approved by a legal adviser before launch.</p>
+    </header>
+    <div class="legal__body" data-fade data-delay="0.2">
+      <p>These terms apply to your use of this website and to booking requests made through it. By using the website you agree to them.</p>
+      <h2>Our service</h2>
+      <p>WINKS London provides professional outcall massage services to adults at private residences and hotels in Central London. Services are provided strictly as described on this website.</p>
+      <h2>Booking requests</h2>
+      <p>Submitting the online form sends a request only. No booking exists until we have contacted you and confirmed the date, time, location and details of your appointment.</p>
+      <h2>Rates and payment</h2>
+      <p><span class="ph">Rates, accepted payment methods and payment timing — to be confirmed</span></p>
+      <h2>Cancellations and changes</h2>
+      <p><span class="ph">Cancellation and rescheduling policy — to be confirmed</span></p>
+      <h2>Your appointment</h2>
+      <ul>
+        <li>Please provide accurate details so that we can reach your address at the agreed time.</li>
+        <li>Please tell us in advance about anything relevant to your comfort or wellbeing.</li>
+        <li>Our therapists are entitled to a safe and respectful environment and may decline or end an appointment where that is not provided.</li>
+      </ul>
+      <h2>Wellbeing</h2>
+      <p>Our massages are intended for relaxation and general wellbeing. They are not medical treatment and are not a substitute for advice from a healthcare professional.</p>
+      <h2>Website content</h2>
+      <p>All content on this website belongs to WINKS London and may not be reproduced without permission.</p>
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of England and Wales.</p>
+      <h2>Contact</h2>
+      <p>Questions about these terms can be sent via our <a href="/contact/">contact page</a>.</p>
+    </div>
+  </article>
+</BaseLayout>

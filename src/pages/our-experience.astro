@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Split from '../components/Split.astro';
+import Steps from '../components/Steps.astro';
+import BookingCTA from '../components/BookingCTA.astro';
+import { images } from '../data/images';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Our Experience' }];
+---
+<BaseLayout
+  title="Our Experience | The WINKS London Outcall Massage Experience"
+  description="Your space, your time, your experience. Discover how a WINKS London outcall massage unfolds — personalised, professional and delivered to your door in Central London."
+  breadcrumbs={crumbs}
+>
+  <PageHero chapter="Chapter 04" kicker="Your space. Your time." title="Your experience" intro="What to expect when WINKS London comes to you." image={images.space} crumbs={crumbs} />
+
+  <div id="content">
+    <section class="statement" aria-labelledby="exp-intro">
+      <p class="eyebrow" data-fade>The experience</p>
+      <div>
+        <h2 class="statement__text" id="exp-intro" data-split>An outcall massage removes everything that stands between you and <em>rest</em>: the journey, the waiting, the return to the street.</h2>
+        <div class="statement__foot" data-stagger>
+          <p>Instead, the experience arrives where you are. Your room, your lighting, your music — or simply silence. Nothing about the evening needs to change except how you feel at the end of it.</p>
+          <p>Everything else is ours to take care of, quietly and professionally.</p>
+        </div>
+      </div>
+    </section>
+
+    <Split image={images.personalised} alt="A therapist massaging a guest’s hand with care" number="01" eyebrow="Personalised arrangements" title="Shaped around you">
+      <p class="lead">No two appointments are arranged in quite the same way.</p>
+      <p>When you enquire, we ask a few simple questions: the experience you have in mind, the pressure you prefer, where you would like the focus to be. Your answers shape the appointment before it begins.</p>
+    </Split>
+
+    <Split image={images.space} alt="A calm, softly lit bedroom in a London residence" number="02" eyebrow="Comfort and convenience" title="Nowhere else to be" reverse ratio="1 / 1">
+      <p class="lead">The most valuable part of an outcall massage is what happens afterwards: nothing at all.</p>
+      <p>There is no changing room and no journey across the city. When your massage ends, you are already home — free to let the evening continue at its own pace.</p>
+    </Split>
+
+    <Split image={images.introDetail} alt="Fresh linen and massage oil prepared on a marble surface" number="03" eyebrow="Professional approach" title="Quietly professional" ratio="3 / 4">
+      <p class="lead">Preparation you barely notice. Standards you always will.</p>
+      <p>Your therapist arrives punctually, prepares your space with care and checks in with you before the massage begins. Throughout, your comfort and your privacy come first.</p>
+      <p>Arrangements are handled discreetly, and your details are used only to organise your appointment.</p>
+    </Split>
+
+    <section class="how" aria-labelledby="exp-how">
+      <div class="how__head">
+        <p class="eyebrow" data-fade>Booking process</p>
+        <h2 class="h2" id="exp-how" data-split>From first enquiry to <em>final</em> exhale</h2>
+        <div class="how__aside" data-fade>
+          <p class="muted">Every request is confirmed with you personally before your appointment is arranged.</p>
+          <a href="/how-it-works/" class="link-arrow">How It Works</a>
+        </div>
+      </div>
+      <Steps />
+    </section>
+  </div>
+
+  <BookingCTA title="Your evening awaits." text="Tell us where and when — we will bring the experience to you." />
+</BaseLayout>

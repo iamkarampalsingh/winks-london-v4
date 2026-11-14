@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { images } from '../data/images';
+import { site, placeholder } from '../data/site';
+const crumbs = [{ label: 'Home', href: '/' }, { label: 'Contact' }];
+const { phone, email, hours } = site.contact;
+---
+<BaseLayout
+  title="Contact & Booking | Arrange Your WINKS London Massage"
+  description="Request an outcall massage appointment with WINKS London in Central London. Share your preferred experience, date, time and location — we confirm every booking personally."
+  breadcrumbs={crumbs}
+>
+  <PageHero chapter="Chapter 07" kicker="Book" title="Your experience" intro="Share a few details and we will be in touch personally to confirm your appointment." image={images.introHands} crumbs={crumbs} compact />
+
+  <div id="content" class="contact">
+    <aside class="contact__aside">
+      <div>
+        <p class="eyebrow" data-fade>Booking request</p>
+        <h2 class="h3" data-split style="margin-top:1.5rem;font-size:clamp(1.8rem,3vw,3rem)">Tell us about the evening you have in mind.</h2>
+      </div>
+      <p class="muted" data-fade>Every appointment is arranged personally. Once we receive your request, we will confirm availability for your address and agree the details with you before anything is booked.</p>
+      <dl class="contact__list" data-stagger>
+        <div><dt>Telephone</dt><dd>{phone ? <a href={`tel:${phone.replace(/\s+/g, '')}`} class="link-u">{phone}</a> : <span class="ph">{placeholder('Telephone')}</span>}</dd></div>
+        <div><dt>Email</dt><dd>{email ? <a href={`mailto:${email}`} class="link-u">{email}</a> : <span class="ph">{placeholder('Email')}</span>}</dd></div>
+        <div><dt>Hours</dt><dd>{hours || <span class="ph">{placeholder('Opening hours')}</span>}</dd></div>
+        <div><dt>Service area</dt><dd>Outcall across Central London — <a href="/areas-we-cover/" class="link-u">areas we cover</a></dd></div>
+      </dl>
+    </aside>
+    <div class="contact__main">
+      <ContactForm />
+    </div>
+  </div>
+</BaseLayout>
