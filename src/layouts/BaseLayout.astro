@@ -6,6 +6,7 @@ import MobileMenu from '../components/MobileMenu.astro';
 import Footer from '../components/Footer.astro';
 import Wordmark from '../components/Wordmark.astro';
 import { site } from '../data/site';
+import { inject as injectAnalytics } from '@vercel/analytics';
 
 interface Props {
   title: string;
@@ -60,6 +61,9 @@ if (site.contact.phone && site.contact.email) {
   });
 }
 const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+
+// Inject Vercel Analytics
+injectAnalytics();
 ---
 <!doctype html>
 <html lang="en-GB">
