@@ -11,7 +11,9 @@ const site = process.env.PUBLIC_SITE_URL || env.PUBLIC_SITE_URL || 'https://www.
 
 export default defineConfig({
   site,
-  adapter: vercel(),
+  adapter: vercel({
+    webAnalytics: { enabled: true }
+  }),
   integrations: [sitemap({ filter: (page) => !page.includes('/api/') })],
   devToolbar: { enabled: false },
   server: { host: true, port: 4321, allowedHosts: true },
